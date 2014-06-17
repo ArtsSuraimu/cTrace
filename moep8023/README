@@ -1,0 +1,32 @@
+Dependencies:
+none
+
+./moep8023 -h gives help
+
+
+Updates v1.1:
+=============
+- Added new command line option -l <1|2> that indicates whether you are going to
+  pass layer 2 frames including link-layer header or IP packets including
+IP-header but without link-layer header to moep8023. If the option is not set,
+the former case is assumed. If -l3 is set, moep8023 will automatically create a
+suitable link-layer header based on the next-hop address for the IP destination
+given in the packet.  Note that frames passed from moep8023 to the domain socket
+*always* include the link-layer header. You need it to identify the type of the
+frame's payload (ARP, IP, ICMP, etc.).
+
+- moep8023 will now automatically filter frames if their source MAC address
+  matches the one of the Ethernet device specified at startup. This does not
+change the behavior compared to v1.0 but was neccessary to avoid packet storms
+when injecting IP-packets without link-layer header.
+
+
+Previous updates:
+=================
+- Also catching SIGTERM to gracefully shutdown, i.e., removing the domain
+  socket file descriptor.
+
+- Fixed a bug that could lead to a segmentation fault when calling accept()
+  due to uninitialized structs. Ubuntu-based systems seemed to be affected
+  when compiler optimizations were turned on.
+
